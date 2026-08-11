@@ -1,0 +1,9 @@
+.DS_Store
+Thumbs.db
+*.user
+*.suo
+*.pdb
+tests/*.exe
+tests/*.png
+macos/.build/
+macos/dist/
