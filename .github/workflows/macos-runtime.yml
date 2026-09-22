@@ -1,0 +1,36 @@
+name: macOS runtime checks
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  runtime:
+    name: AppKit runtime (${{ matrix.runner }})
+    strategy:
+      fail-fast: false
+      matrix:
+        runner: [macos-15, macos-15-intel]
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - name: Check content and build universal production app
+        run: |
+          python3 tests/check_english.py
+          bash macos/build-macos.sh
+      - name: Run isolated AppKit checks with real timers
+        run: bash macos/check-runtime.sh
+      - name: Preserve runtime evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: macos-runtime-${{ matrix.runner }}
+          path: macos/runtime-results/
+          if-no-files-found: warn
+          retention-days: 30

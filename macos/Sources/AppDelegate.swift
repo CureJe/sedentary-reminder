@@ -10,7 +10,7 @@ protocol ReminderWindowControllerDelegate: AnyObject {
 }
 
 final class AppDelegate: NSObject, NSApplicationDelegate, SettingsWindowControllerDelegate, ReminderWindowControllerDelegate {
-    private let settings = SettingsStore()
+    private let settings: SettingsStore
     private var statusItem: NSStatusItem!
     private var statusMenu: NSMenu!
     private var toggleMenuItem: NSMenuItem!
@@ -19,6 +19,19 @@ final class AppDelegate: NSObject, NSApplicationDelegate, SettingsWindowControll
     private var settingsController: SettingsWindowController?
     private var reminderController: ReminderWindowController?
     private var rotationIndex = 0
+
+    init(settings: SettingsStore = SettingsStore()) {
+        self.settings = settings
+        super.init()
+    }
+
+    #if RUNTIME_CHECKS
+    // Read-only observations, compiled only into the isolated test application.
+    var runtimeStatusMenu: NSMenu { statusMenu }
+    var runtimeSettingsWindow: SettingsWindowController? { settingsController }
+    var runtimeReminder: ReminderWindowController? { reminderController }
+    var runtimeNextReminder: Date { nextReminder }
+    #endif
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         if let identifier = Bundle.main.bundleIdentifier {
@@ -155,6 +168,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, SettingsWindowControll
     }
 }
 
+#if !RUNTIME_CHECKS
 @main
 enum StandUpBuddyMain {
     private static let delegate = AppDelegate()
@@ -165,3 +179,4 @@ enum StandUpBuddyMain {
         application.run()
     }
 }
+#endif

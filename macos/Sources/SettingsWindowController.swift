@@ -20,7 +20,7 @@ final class SettingsWindowController: NSWindowController, NSWindowDelegate {
         self.settings = settings
 
         let window = NSWindow(
-            contentRect: NSRect(x: 0, y: 0, width: 680, height: 560),
+            contentRect: NSRect(x: 0, y: 0, width: 680, height: 660),
             styleMask: [.titled, .closable, .miniaturizable],
             backing: .buffered,
             defer: false
@@ -149,17 +149,32 @@ final class SettingsWindowController: NSWindowController, NSWindowDelegate {
         ])
     }
 
-    private func makeCard(containing view: NSView) -> NSBox {
+    private func makeCard(containing view: NSView) -> NSView {
+        // Pin the content to the wrapper so its fitting height reaches the stack.
+        // Assigning an NSStackView directly as NSBox.contentView loses that chain.
+        let card = NSView()
+        card.translatesAutoresizingMaskIntoConstraints = false
         let box = NSBox()
         box.boxType = .custom
-        box.borderType = .lineBorder
         box.borderWidth = 0.5
         box.borderColor = .separatorColor
         box.cornerRadius = 16
         box.fillColor = NSColor.controlBackgroundColor.withAlphaComponent(0.78)
-        box.contentViewMargins = NSSize(width: 22, height: 18)
-        box.contentView = view
-        return box
+        box.translatesAutoresizingMaskIntoConstraints = false
+        view.translatesAutoresizingMaskIntoConstraints = false
+        card.addSubview(box)
+        card.addSubview(view)
+        NSLayoutConstraint.activate([
+            box.leadingAnchor.constraint(equalTo: card.leadingAnchor),
+            box.trailingAnchor.constraint(equalTo: card.trailingAnchor),
+            box.topAnchor.constraint(equalTo: card.topAnchor),
+            box.bottomAnchor.constraint(equalTo: card.bottomAnchor),
+            view.leadingAnchor.constraint(equalTo: card.leadingAnchor, constant: 22),
+            view.trailingAnchor.constraint(equalTo: card.trailingAnchor, constant: -22),
+            view.topAnchor.constraint(equalTo: card.topAnchor, constant: 18),
+            view.bottomAnchor.constraint(equalTo: card.bottomAnchor, constant: -18)
+        ])
+        return card
     }
 
     private func label(_ text: String) -> NSTextField {
@@ -228,12 +243,19 @@ final class SettingsWindowController: NSWindowController, NSWindowDelegate {
     }
 
     @objc private func settingsChanged(_ sender: Any?) {
+        let previousInterval = settings.intervalMinutes
+        let previousDuration = settings.popupSeconds
+        let previousCharacter = settings.characterSelection
+        let previousSound = settings.soundEnabled
         settings.intervalMinutes = intervalField.integerValue
         settings.popupSeconds = popupField.integerValue
         settings.characterSelection = characterPopup.indexOfSelectedItem - 1
         settings.soundEnabled = soundCheckbox.state == .on
         refresh()
-        settingsDelegate?.settingsWindowDidChange(self)
+        if settings.intervalMinutes != previousInterval || settings.popupSeconds != previousDuration
+            || settings.characterSelection != previousCharacter || settings.soundEnabled != previousSound {
+            settingsDelegate?.settingsWindowDidChange(self)
+        }
     }
 
     @objc private func loginSettingChanged(_ sender: NSButton) {

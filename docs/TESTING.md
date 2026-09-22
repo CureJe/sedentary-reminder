@@ -36,9 +36,27 @@ this checklist. Schedule disruptive checks with its owner.
 
 ## macOS
 
+For automated validation without a personal Mac, use the
+[macOS runtime workflow](https://github.com/CureJe/sedentary-reminder/actions/workflows/macos-runtime.yml).
+It runs the real AppKit controllers on native arm64 and x86_64 macOS 15 hosts,
+with a unique UserDefaults suite and a separate test bundle identity. The
+production entry point is replaced only in the test build; no login registration
+is performed. See [local commands and artifact contents](../macos/README.md#automated-runtime-checks-without-a-personal-mac).
+
+The runtime test covers settings controls, bounds and persistence actions,
+character resources and renders, menu actions, preview lifetime, dismissal
+keys, natural one-minute reminders, automatic dismissal, and five-minute
+snooze/rescheduling. Key and control actions are programmatic. The renders show
+the application's own views; they do not verify final desktop composition or
+animated frame timing. Sound files are decoded but not played.
+
 Use the [macOS real-device checklist](../macos/README.md#real-device-validation-checklist).
 Report Apple Silicon and Intel results separately. A universal binary does not
-prove both hardware types were tested.
+prove both architectures ran. Hosted VM runs do not establish physical hardware,
+login, sleep/wake, multi-display, Spaces, Reduce Motion preference changes,
+Gatekeeper distribution acceptance, or older macOS compatibility. Mark these
+items untested until corresponding evidence exists; they do not prevent running
+the automated checks.
 
 ## Evidence boundaries
 
@@ -57,7 +75,7 @@ possible. Programmatic key handling is not a physical-keyboard acceptance test.
 This is a source integration check, not a full installed-release desktop test.
 
 The existing English UI harness checks rendered controls and dismissal logic.
-The macOS workflow checks compilation and bundle structure. Neither establishes
+The macOS workflows check compilation, bundle structure and AppKit runtime. Neither establishes
 audible sound, real login startup, sleep/wake, or multi-display acceptance.
 Only describe a behavior as verified when the corresponding evidence is recorded.
 
