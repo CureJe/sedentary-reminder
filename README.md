@@ -1,5 +1,8 @@
 # Stand Up Buddy
 
+[![Windows checks](https://github.com/CureJe/sedentary-reminder/actions/workflows/windows.yml/badge.svg?branch=main)](https://github.com/CureJe/sedentary-reminder/actions/workflows/windows.yml)
+[![macOS build](https://github.com/CureJe/sedentary-reminder/actions/workflows/macos.yml/badge.svg?branch=main)](https://github.com/CureJe/sedentary-reminder/actions/workflows/macos.yml)
+
 Stand Up Buddy is a lightweight desktop break reminder for Windows and macOS. Instead of showing a stiff notification box, it brings large animated characters onto the screen, each with a distinct entrance, message, and short nonverbal sound.
 
 [Download for Windows](https://github.com/CureJe/sedentary-reminder/releases/latest) · [Report a problem](https://github.com/CureJe/sedentary-reminder/issues/new/choose) · [Contribute](CONTRIBUTING.md) · [Changelog](CHANGELOG.md)
@@ -112,6 +115,11 @@ Full source links and modification notes are available in [`assets/audio/README.
 See [CONTRIBUTING.md](CONTRIBUTING.md) for setup, validation, and pull request guidance. The [roadmap](ROADMAP.md) lists concrete validation gaps and improvements. Reports from real Windows and Mac users are welcome; include the app version, OS version, display setup, and steps to reproduce. Never include passwords, access tokens, or private documents.
 
 The app sends no analytics or telemetry. Release download counts measure downloads, not unique or active users. Adoption claims should be backed by public reports or explicit permission from the people involved.
+
+To help with real-device validation, follow the [desktop test guide](docs/TESTING.md)
+and submit a **Desktop test report** from the issue picker. See the
+[code of conduct](CODE_OF_CONDUCT.md), [security policy](SECURITY.md), and
+[release process](docs/RELEASING.md) for project maintenance practices.
 
 ## License
 

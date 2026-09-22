@@ -8,3 +8,5 @@ tests/*.png
 tests/output/
 macos/.build/
 macos/dist/
+dist/
+__pycache__/
