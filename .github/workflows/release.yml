@@ -1,0 +1,83 @@
+name: Windows release package
+
+on:
+  pull_request:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: windows-release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  package:
+    runs-on: windows-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          fetch-depth: 0
+      - name: Check tracked content and version
+        shell: pwsh
+        run: |
+          python tests/check_english.py
+          if ($LASTEXITCODE -ne 0) { throw 'Content checks failed' }
+          $source = Get-Content AssemblyInfo.cs -Raw
+          if ($source -notmatch 'AssemblyFileVersion\("(\d+\.\d+\.\d+)\.0"\)') { throw 'Missing version' }
+          $version = $Matches[1]
+          if ($env:GITHUB_REF_TYPE -eq 'tag' -and $env:GITHUB_REF_NAME -cne "v$version") { throw 'Tag/version mismatch' }
+          "RELEASE_VERSION=$version" >> $env:GITHUB_ENV
+      - name: Build and check Windows UI
+        shell: powershell
+        run: ./tests/check-english.ps1
+      - name: Verify and package the build
+        shell: pwsh
+        run: |
+          $fileVersion = (Get-Item bin/StandUpBuddy.exe).VersionInfo.FileVersion
+          if ($fileVersion -ne "$env:RELEASE_VERSION.0") { throw 'Executable/version mismatch' }
+          python -m unittest discover -s tests -p test_package_windows.py
+          if ($LASTEXITCODE -ne 0) { throw 'Packaging tests failed' }
+          python tools/package_windows.py --version $env:RELEASE_VERSION
+          if ($LASTEXITCODE -ne 0) { throw 'Packaging failed' }
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: windows-release
+          path: dist/releases/*
+          if-no-files-found: error
+          retention-days: 14
+
+  draft:
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+    needs: package
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          name: windows-release
+          path: release
+      - name: Create a draft without overwriting an existing release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          RELEASE_TAG: ${{ github.ref_name }}
+        run: |
+          set -euo pipefail
+          cat > release-notes.md <<'NOTES'
+          Portable Windows build produced by GitHub Actions from this release tag.
+          Extract the ZIP and run StandUpBuddy.exe. Verify the archive using the
+          attached SHA256SUMS.txt. The archive includes source commit information
+          and third-party sound notices. The executable is not commercially signed.
+
+          Maintainer: review the changelog and complete the desktop acceptance
+          checklist before publishing this draft. macOS binaries are not included.
+          CI checks do not verify login startup, sound, sleep/wake, or multiple displays.
+          NOTES
+          gh release create "$RELEASE_TAG" release/* --verify-tag --draft \
+            --title "Stand Up Buddy $RELEASE_TAG" --notes-file release-notes.md

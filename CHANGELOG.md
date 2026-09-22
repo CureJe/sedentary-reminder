@@ -1,5 +1,14 @@
 # Changelog
 
+## Unreleased
+
+- Add Windows release packaging with version and checksum checks, original sound
+  notices, source commit information, and tag-triggered draft releases.
+- Add a real-clock Windows timer integration harness and record its validation
+  boundary separately from installed-release desktop acceptance.
+- Add security and community policies, a desktop test report template, and
+  release/acceptance guides.
+
 ## 1.3.1 - 2026-09-22
 
 - Convert Windows and macOS UI, accessibility labels, errors, scripts, documentation, filenames, and preview text to English.
