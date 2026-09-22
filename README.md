@@ -1,4 +1,4 @@
-# Stand Up Buddy (起身啦)
+# Stand Up Buddy
 
 Stand Up Buddy is a lightweight desktop break reminder for Windows and macOS. Instead of showing a stiff notification box, it brings large animated characters onto the screen, each with a distinct entrance, message, and short nonverbal sound.
 
@@ -12,7 +12,7 @@ Long vibe-coding sessions with Codex can make it surprisingly easy to lose track
 
 | Platform | Implementation | Current status |
 | --- | --- | --- |
-| Windows 10/11 | Native C# and WinForms | Source included; portable `v1.3.0` executable included |
+| Windows 10/11 | Native C# and WinForms | Source included; portable `v1.3.1` executable included |
 | macOS 13+ | Native Swift, AppKit, and Core Animation | Source and universal build script included; final build must be produced and tested on a Mac |
 
 The project intentionally avoids Electron, WebView, and always-running high-frame-rate loops. While idle, it performs only lightweight timer checks. Animation work stops after a character settles on screen.
@@ -24,7 +24,7 @@ The project intentionally avoids Electron, WebView, and always-running high-fram
 - Five large characters with unique entrance animations
 - Character artwork sized to occupy roughly one-third of the screen
 - One short character sound per appearance, with no speech or text-to-speech
-- Random character rotation or manual character selection
+- Sequential character rotation or manual character selection
 - Five-minute snooze
 - Windows system tray and macOS menu bar operation
 - Optional launch at sign-in
@@ -37,7 +37,7 @@ The five characters are an orange cat, a corgi, a red panda, a mech guardian, an
 
 ### Run the portable build
 
-Download [`bin/起身啦.exe`](bin/起身啦.exe) and run it. The app uses the .NET Framework included with Windows 10 and Windows 11 and does not require an installer.
+Download [`bin/StandUpBuddy.exe`](bin/StandUpBuddy.exe) and run it. The app uses the .NET Framework included with Windows 10 and Windows 11 and does not require an installer.
 
 The executable is not commercially code-signed, so Windows may show a first-run security prompt. Verify it against [`SHA256SUMS.txt`](SHA256SUMS.txt) before opening it.
 
@@ -48,7 +48,19 @@ The executable is not commercially code-signed, so Windows may show a first-run 
 .\run.cmd
 ```
 
-The output is written to `bin\起身啦.exe`.
+The output is written to `bin\StandUpBuddy.exe`.
+
+### Upgrading from the original release
+
+Quit the previous version before running `StandUpBuddy.exe`. Your reminder interval, sound preference, and character selection are retained. Legacy character names are recognized by one-way fingerprints and displayed in English; newly saved settings use English values.
+
+If you enabled launch at sign-in in the previous version, turn that option off and back on in the new app. This removes the old startup entry and registers the new executable path. You can then remove the previous executable and update any shortcuts.
+
+### English UI checks
+
+Run `powershell.exe -NoProfile -ExecutionPolicy Bypass -File tests/check-english.ps1` from a Git checkout on Windows. It rebuilds the app, checks old character-setting compatibility, inspects settings-window bounds, renders all five reminder scenes, and checks Escape dismissal. Generated images are written to the ignored `tests/output/` directory.
+
+These checks do not replace testing startup at sign-in, sound playback, or the complete reminder cycle on a real desktop.
 
 ## macOS
 
@@ -60,7 +72,7 @@ chmod +x build-macos.sh
 ./build-macos.sh
 ```
 
-The default script creates a universal Apple Silicon and Intel build at `macos/dist/起身啦.app`. See the [macOS build and validation guide](macos/README.md) for signing, Gatekeeper, and real-device testing requirements.
+The default script creates a universal Apple Silicon and Intel build at `macos/dist/StandUpBuddy.app`. See the [macOS build and validation guide](macos/README.md) for signing, Gatekeeper, and real-device testing requirements.
 
 ## Controls
 

@@ -9,8 +9,8 @@ final class SettingsWindowController: NSWindowController, NSWindowDelegate {
     private let intervalField = NSTextField()
     private let popupField = NSTextField()
     private let characterPopup = NSPopUpButton()
-    private let soundCheckbox = NSButton(checkboxWithTitle: "播放一次角色提示音", target: nil, action: nil)
-    private let loginCheckbox = NSButton(checkboxWithTitle: "登录 Mac 后自动运行", target: nil, action: nil)
+    private let soundCheckbox = NSButton(checkboxWithTitle: "Play a short character sound", target: nil, action: nil)
+    private let loginCheckbox = NSButton(checkboxWithTitle: "Launch at login", target: nil, action: nil)
     private let runningButton = NSButton()
     private let statusLabel = NSTextField(labelWithString: "")
     private let nextLabel = NSTextField(labelWithString: "")
@@ -25,7 +25,7 @@ final class SettingsWindowController: NSWindowController, NSWindowDelegate {
             backing: .buffered,
             defer: false
         )
-        window.title = "起身啦"
+        window.title = "Stand Up Buddy"
         window.center()
         window.isReleasedWhenClosed = false
         window.titlebarAppearsTransparent = true
@@ -54,11 +54,11 @@ final class SettingsWindowController: NSWindowController, NSWindowDelegate {
         effect.translatesAutoresizingMaskIntoConstraints = false
         window.contentView = effect
 
-        let title = NSTextField(labelWithString: "坐得再专注，也要记得起身")
+        let title = NSTextField(labelWithString: "Stay focused. Take breaks.")
         title.font = .systemFont(ofSize: 26, weight: .semibold)
         title.textColor = .labelColor
 
-        let subtitle = NSTextField(labelWithString: "原生菜单栏提醒器 · 低占用 · 无边框角色动画")
+        let subtitle = NSTextField(labelWithString: "Native menu bar app / Lightweight / Animated reminders")
         subtitle.font = .systemFont(ofSize: 13, weight: .regular)
         subtitle.textColor = .secondaryLabelColor
 
@@ -77,7 +77,7 @@ final class SettingsWindowController: NSWindowController, NSWindowDelegate {
         configureNumberField(intervalField, minimum: 1, maximum: 240)
         configureNumberField(popupField, minimum: 5, maximum: 120)
 
-        characterPopup.addItem(withTitle: "依次轮换五个角色")
+        characterPopup.addItem(withTitle: "Rotate all five characters")
         CharacterKind.allCases.forEach { characterPopup.addItem(withTitle: $0.displayName) }
         characterPopup.target = self
         characterPopup.action = #selector(settingsChanged(_:))
@@ -88,9 +88,9 @@ final class SettingsWindowController: NSWindowController, NSWindowDelegate {
         loginCheckbox.action = #selector(loginSettingChanged(_:))
 
         let settingsGrid = NSGridView(views: [
-            [label("提醒间隔"), fieldRow(intervalField, suffix: "分钟")],
-            [label("角色停留"), fieldRow(popupField, suffix: "秒")],
-            [label("登场角色"), characterPopup]
+            [label("Remind every"), fieldRow(intervalField, suffix: "minutes")],
+            [label("Show for"), fieldRow(popupField, suffix: "seconds")],
+            [label("Character"), characterPopup]
         ])
         settingsGrid.rowSpacing = 14
         settingsGrid.columnSpacing = 24
@@ -105,7 +105,7 @@ final class SettingsWindowController: NSWindowController, NSWindowDelegate {
 
         let settingsCard = makeCard(containing: optionsStack)
 
-        let previewButton = NSButton(title: "预览下一位角色", target: self, action: #selector(preview(_:)))
+        let previewButton = NSButton(title: "Preview next character", target: self, action: #selector(preview(_:)))
         previewButton.bezelStyle = .rounded
         previewButton.controlSize = .large
 
@@ -121,7 +121,7 @@ final class SettingsWindowController: NSWindowController, NSWindowDelegate {
         buttons.distribution = .fillEqually
         buttons.spacing = 12
 
-        let footnote = NSTextField(wrappingLabelWithString: "左键点击角色完成休息，右键点击可稍后 5 分钟；也可使用 Return / Space 和 S 键。动画会遵循 macOS 的“减少动态效果”设置。")
+        let footnote = NSTextField(wrappingLabelWithString: "Click a character to dismiss, or right-click to snooze for 5 minutes. You can also use Return / Space to dismiss and S to snooze. Animations respect the macOS Reduce Motion setting.")
         footnote.font = .systemFont(ofSize: 12)
         footnote.textColor = .tertiaryLabelColor
 
@@ -205,25 +205,25 @@ final class SettingsWindowController: NSWindowController, NSWindowDelegate {
         soundCheckbox.state = settings.soundEnabled ? .on : .off
         let loginStatus = SMAppService.mainApp.status
         loginCheckbox.state = (loginStatus == .enabled || loginStatus == .requiresApproval) ? .on : .off
-        runningButton.title = settings.isRunning ? "暂停提醒" : "开始提醒"
+        runningButton.title = settings.isRunning ? "Pause reminders" : "Start reminders"
         refreshStatus()
     }
 
     func refreshStatus() {
         guard isWindowLoaded else { return }
         if settings.isRunning {
-            statusLabel.stringValue = "提醒运行中"
+            statusLabel.stringValue = "Reminders running"
             statusLabel.textColor = .systemGreen
             if let next = nextReminderProvider?() {
                 let remaining = max(0, Int(next.timeIntervalSinceNow.rounded(.up)))
-                nextLabel.stringValue = String(format: "下一次提醒：%02d:%02d", remaining / 60, remaining % 60)
+                nextLabel.stringValue = String(format: "Next break: %02d:%02d", remaining / 60, remaining % 60)
             } else {
-                nextLabel.stringValue = "正在安排下一次提醒"
+                nextLabel.stringValue = "Scheduling your next break"
             }
         } else {
-            statusLabel.stringValue = "提醒已暂停"
+            statusLabel.stringValue = "Reminders paused"
             statusLabel.textColor = .secondaryLabelColor
-            nextLabel.stringValue = "点击“开始提醒”后重新计时"
+            nextLabel.stringValue = "Select Start reminders to restart the timer"
         }
     }
 
@@ -248,16 +248,16 @@ final class SettingsWindowController: NSWindowController, NSWindowDelegate {
             let status = service.status
             sender.state = (status == .enabled || status == .requiresApproval) ? .on : .off
             let alert = NSAlert(error: error)
-            alert.messageText = "无法更新登录自启"
-            alert.informativeText = "请在“系统设置 > 通用 > 登录项”中检查权限后重试。"
+            alert.messageText = "Unable to update launch at login"
+            alert.informativeText = "Check permissions in System Settings > General > Login Items, then try again."
             alert.runModal()
         }
 
         if service.status == .requiresApproval {
             let alert = NSAlert()
-            alert.messageText = "还需要你的确认"
-            alert.informativeText = "请到“系统设置 > 通用 > 登录项”允许“起身啦”在登录时运行。"
-            alert.addButton(withTitle: "知道了")
+            alert.messageText = "Approval required"
+            alert.informativeText = "Allow Stand Up Buddy to launch at login in System Settings > General > Login Items."
+            alert.addButton(withTitle: "OK")
             alert.runModal()
         }
         refresh()

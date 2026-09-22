@@ -24,7 +24,9 @@ chmod +x build-macos.sh
 ./build-macos.sh
 ```
 
-Output: `macos/dist/起身啦.app`
+Output: `macos/dist/StandUpBuddy.app`
+
+The app's display language is English. The existing bundle identifier is intentionally retained so macOS can continue using saved preferences and the existing app identity. Quit and replace the old bundle, then check launch-at-login registration after moving or renaming it.
 
 To build only for the current Mac architecture:
 

@@ -2,7 +2,7 @@ $ErrorActionPreference = 'Stop'
 
 $projectRoot = Split-Path -Parent $MyInvocation.MyCommand.Path
 $outputDirectory = Join-Path $projectRoot 'bin'
-$applicationName = ([char]0x8D77).ToString() + ([char]0x8EAB).ToString() + ([char]0x5566).ToString()
+$applicationName = 'StandUpBuddy'
 $outputExecutable = Join-Path $outputDirectory ($applicationName + '.exe')
 $compiler = Join-Path $env:WINDIR 'Microsoft.NET\Framework64\v4.0.30319\csc.exe'
 
@@ -46,4 +46,6 @@ $compilerArguments = @(
 & $compiler $compilerArguments
 
 if ($LASTEXITCODE -ne 0) { throw 'Compilation failed.' }
+$checksum = (Get-FileHash -LiteralPath $outputExecutable -Algorithm SHA256).Hash
+[IO.File]::WriteAllText((Join-Path $projectRoot 'SHA256SUMS.txt'), "$checksum  bin/StandUpBuddy.exe`n", [Text.UTF8Encoding]::new($false))
 Write-Host "Build complete: $outputExecutable"
