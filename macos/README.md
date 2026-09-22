@@ -46,6 +46,35 @@ The script applies the hardened runtime when a Developer ID is supplied, but not
 
 An ad hoc signed test build may require a manual Gatekeeper override on first launch. If login launch is awaiting approval, open **System Settings > General > Login Items** and allow Stand Up Buddy.
 
+## Automated runtime checks without a personal Mac
+
+The [macOS runtime workflow](https://github.com/CureJe/sedentary-reminder/actions/workflows/macos-runtime.yml)
+runs on pull requests, pushes to main, and manual dispatch. It uses separate
+standard `macos-15` (arm64) and `macos-15-intel` (x86_64) GitHub-hosted runners.
+Each runner compiles the universal production app, then builds a native test
+bundle from the same application sources with an isolated preferences suite.
+No personal preferences or login-item registration are changed.
+
+On a Mac with an active GUI session, reproduce the check with:
+
+```bash
+bash macos/build-macos.sh
+bash macos/check-runtime.sh
+```
+
+The harness exercises launch, menu pause/resume, settings actions and bounds,
+settings limits, character rotation, all five character windows, image/audio
+decoding, dismissal keys, preview lifetime, and duplicate-window prevention.
+It waits for two real one-minute reminders, a five-second automatic dismissal,
+and a full five-minute snooze before checking normal rescheduling. It does not
+advance the clock or shorten the production timer intervals.
+
+Download `macos-runtime-macos-15` and `macos-runtime-macos-15-intel` from a
+completed workflow run. Each contains `report.json`, `runtime.log`,
+`settings.png`, and five `character-*.png` renders. The report records the
+architecture, macOS version, tested Git commit, elapsed time, checks, and limits.
+Artifacts expire after 30 days; retain a validation record for durable results.
+
 ## Real-device validation checklist
 
 1. Launch on both Apple Silicon and Intel Macs; confirm the menu bar icon appears and no persistent Dock icon remains.
@@ -60,4 +89,12 @@ An ad hoc signed test build may require a manual Gatekeeper override on first la
 
 The macOS GitHub Actions workflow compiles both arm64 and x86_64 using the macOS/Xcode SDK, builds a universal app bundle, and verifies its ad hoc signature and English bundle metadata. It also checks repository text, resource paths, and the shipped Windows checksum with `python3 tests/check_english.py`.
 
-This is build validation, not an interactive desktop test. English text layout, menu bar behavior, sound playback, login items, and multi-display animation still need the real-device checks above. Developer ID signing, notarization, and Gatekeeper distribution acceptance remain unverified; CI does not publish a macOS release binary.
+The additional runtime workflow executes AppKit in hosted macOS VMs. It uses
+programmatic control/key actions and captures its own views, not the desktop.
+Audio files are decoded with sound disabled. Physical keyboard and audible
+sound, login items, sleep/wake, display notches, multiple displays, full-screen
+Spaces, and changing the system Reduce Motion preference remain unverified.
+The deployment target is macOS 13, but runtime evidence covers only the macOS
+version reported by CI. Developer ID signing, notarization, and Gatekeeper
+distribution acceptance remain unverified; CI does not publish a macOS release
+binary.

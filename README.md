@@ -2,6 +2,7 @@
 
 [![Windows checks](https://github.com/CureJe/sedentary-reminder/actions/workflows/windows.yml/badge.svg?branch=main)](https://github.com/CureJe/sedentary-reminder/actions/workflows/windows.yml)
 [![macOS build](https://github.com/CureJe/sedentary-reminder/actions/workflows/macos.yml/badge.svg?branch=main)](https://github.com/CureJe/sedentary-reminder/actions/workflows/macos.yml)
+[![macOS runtime](https://github.com/CureJe/sedentary-reminder/actions/workflows/macos-runtime.yml/badge.svg?branch=main)](https://github.com/CureJe/sedentary-reminder/actions/workflows/macos-runtime.yml)
 
 Stand Up Buddy is a lightweight desktop break reminder for Windows and macOS. Instead of showing a stiff notification box, it brings large animated characters onto the screen, each with a distinct entrance, message, and short nonverbal sound.
 
@@ -20,7 +21,7 @@ Long vibe-coding sessions with Codex can make it surprisingly easy to lose track
 | Platform | Implementation | Current status |
 | --- | --- | --- |
 | Windows 10/11 | Native C# and WinForms | Source included; portable `v1.3.1` executable included |
-| macOS 13+ | Native Swift, AppKit, and Core Animation | Universal build checked by macOS CI; interactive desktop testing pending |
+| macOS 13+ | Native Swift, AppKit, and Core Animation | Universal build and native arm64/Intel AppKit CI; physical-device acceptance pending |
 
 The project intentionally avoids Electron, WebView, and always-running high-frame-rate loops. While idle, it performs only lightweight timer checks. Animation work stops after a character settles on screen.
 
@@ -82,6 +83,12 @@ chmod +x build-macos.sh
 ```
 
 The default script creates a universal Apple Silicon and Intel build at `macos/dist/StandUpBuddy.app`. See the [macOS build and validation guide](macos/README.md) for signing, Gatekeeper, and real-device testing requirements.
+
+Contributors without a Mac can use the [macOS runtime workflow](https://github.com/CureJe/sedentary-reminder/actions/workflows/macos-runtime.yml).
+It runs the application controllers on separate Apple Silicon and Intel macOS 15
+hosts, waits through real reminder and snooze intervals, and saves a report and
+six view renders per architecture. This does not establish physical-device or
+macOS 13/14 compatibility; see the [test boundaries](docs/TESTING.md#macos).
 
 ## Controls
 

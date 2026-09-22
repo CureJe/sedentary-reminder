@@ -99,7 +99,7 @@ final class RuntimeChecks {
         }
         try require(window.isVisible && window.title == "Stand Up Buddy", "Settings did not open")
         root.layoutSubtreeIfNeeded()
-        try saveView(root, name: "settings-before-actions")
+        try saveView(root, name: "settings")
         let all = views(root)
         let controls = all.compactMap { $0 as? NSControl }.filter { !$0.isHiddenOrHasHiddenAncestor }
         try require(controls.count >= 10, "Settings controls missing")
@@ -205,6 +205,18 @@ final class RuntimeChecks {
         try menuAction("Start reminders")
         let firstDeadline = delegate.runtimeNextReminder
         try require(firstDeadline.timeIntervalSinceNow > 58, "Resume did not schedule a full minute")
+        guard let root = settingsWindow.window?.contentView,
+              let previewButton = views(root).compactMap({ $0 as? NSButton })
+                .first(where: { $0.title == "Preview next character" }) else {
+            throw CheckFailure.failed("Settings preview button missing")
+        }
+        _ = previewButton.sendAction(previewButton.action, to: previewButton.target)
+        guard let settingsPreview = delegate.runtimeReminder else {
+            throw CheckFailure.failed("Settings preview did not open")
+        }
+        try require(delegate.runtimeNextReminder == firstDeadline, "Unchanged settings preview moved timer deadline")
+        try key(53, in: settingsPreview)
+        try require(delegate.runtimeNextReminder == firstDeadline, "Settings preview dismissal moved timer deadline")
         try await wait("first natural reminder", timeout: 75) { self.delegate.runtimeReminder != nil }
         try require(Date() >= firstDeadline, "Reminder appeared before its deadline")
         record("First natural one-minute reminder appeared")

@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Add native Apple Silicon and Intel macOS AppKit runtime CI with isolated
+  preferences, settings/character view renders, and real reminder/snooze timers.
+- Fix collapsed macOS settings cards that overlapped controls, and keep the
+  reminder deadline unchanged when previewing without changing settings.
 - Add Windows release packaging with version and checksum checks, original sound
   notices, source commit information, and tag-triggered draft releases.
 - Add a real-clock Windows timer integration harness and record its validation
