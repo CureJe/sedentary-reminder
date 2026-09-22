@@ -99,13 +99,15 @@ final class RuntimeChecks {
         }
         try require(window.isVisible && window.title == "Stand Up Buddy", "Settings did not open")
         root.layoutSubtreeIfNeeded()
+        try saveView(root, name: "settings-before-actions")
         let all = views(root)
         let controls = all.compactMap { $0 as? NSControl }.filter { !$0.isHiddenOrHasHiddenAncestor }
         try require(controls.count >= 10, "Settings controls missing")
         for control in controls {
             let frame = control.convert(control.bounds, to: root)
             try require(frame.width > 0 && frame.height > 0, "Empty settings control")
-            try require(root.bounds.insetBy(dx: -2, dy: -2).contains(frame), "Settings control outside content: " + control.stringValue)
+            try require(root.bounds.insetBy(dx: -2, dy: -2).contains(frame),
+                        "Settings control outside content: \(control.stringValue); frame=\(frame), content=\(root.bounds)")
             try require(control.stringValue.range(of: "\\p{Han}", options: .regularExpression) == nil,
                         "Non-English settings control")
         }
