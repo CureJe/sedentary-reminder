@@ -2,6 +2,10 @@
 
 Stand Up Buddy is a lightweight desktop break reminder for Windows and macOS. Instead of showing a stiff notification box, it brings large animated characters onto the screen, each with a distinct entrance, message, and short nonverbal sound.
 
+[Download for Windows](https://github.com/CureJe/sedentary-reminder/releases/latest) · [Report a problem](https://github.com/CureJe/sedentary-reminder/issues/new/choose) · [Contribute](CONTRIBUTING.md) · [Changelog](CHANGELOG.md)
+
+![Windows settings](docs/settings-preview.png)
+
 ![Web Ranger reminder preview](docs/web-ranger-preview.png)
 
 ## Why this project exists
@@ -37,9 +41,11 @@ The five characters are an orange cat, a corgi, a red panda, a mech guardian, an
 
 ### Run the portable build
 
-Download [`bin/StandUpBuddy.exe`](bin/StandUpBuddy.exe) and run it. The app uses the .NET Framework included with Windows 10 and Windows 11 and does not require an installer.
+Download the Windows ZIP from [Releases](https://github.com/CureJe/sedentary-reminder/releases/latest), extract it, and run `StandUpBuddy.exe`. The archive includes license and sound attribution notices. The app uses the .NET Framework included with Windows 10 and Windows 11 and does not require an installer. The executable is also available in [`bin/StandUpBuddy.exe`](bin/StandUpBuddy.exe).
 
 The executable is not commercially code-signed, so Windows may show a first-run security prompt. Verify it against [`SHA256SUMS.txt`](SHA256SUMS.txt) before opening it.
+
+For a release download, compare `Get-FileHash .\StandUpBuddy-v1.3.1-windows.zip -Algorithm SHA256` with the release's `SHA256SUMS.txt`. The repository checksum above covers the executable in `bin/`, not the release ZIP.
 
 ### Build from source
 
@@ -100,6 +106,12 @@ tools/       Asset preparation helper
 - Web Ranger artwork: original AI-assisted character artwork created for this open-source release
 
 Full source links and modification notes are available in [`assets/audio/README.md`](assets/audio/README.md). No movie audio or spoken dialogue is included.
+
+## Contributing and feedback
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for setup, validation, and pull request guidance. The [roadmap](ROADMAP.md) lists concrete validation gaps and improvements. Reports from real Windows and Mac users are welcome; include the app version, OS version, display setup, and steps to reproduce. Never include passwords, access tokens, or private documents.
+
+The app sends no analytics or telemetry. Release download counts measure downloads, not unique or active users. Adoption claims should be backed by public reports or explicit permission from the people involved.
 
 ## License
 
