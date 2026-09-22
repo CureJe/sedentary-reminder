@@ -247,9 +247,11 @@ final class SettingsWindowController: NSWindowController, NSWindowDelegate {
         } catch {
             let status = service.status
             sender.state = (status == .enabled || status == .requiresApproval) ? .on : .off
-            let alert = NSAlert(error: error)
+            let alert = NSAlert()
+            alert.alertStyle = .warning
             alert.messageText = "Unable to update launch at login"
             alert.informativeText = "Check permissions in System Settings > General > Login Items, then try again."
+            alert.addButton(withTitle: "OK")
             alert.runModal()
         }
 

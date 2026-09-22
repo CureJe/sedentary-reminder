@@ -302,11 +302,12 @@ final class ReminderView: NSView {
         card.addSublayer(title)
 
         let subtitle = CATextLayer()
-        subtitle.frame = CGRect(x: 18, y: 28, width: card.bounds.width - 36, height: 28)
+        subtitle.frame = CGRect(x: 18, y: 16, width: card.bounds.width - 36, height: 44)
         subtitle.contentsScale = window?.backingScaleFactor ?? 2
         subtitle.font = NSFont.systemFont(ofSize: 14, weight: .medium)
         subtitle.fontSize = 14
         subtitle.alignmentMode = .center
+        subtitle.isWrapped = true
         subtitle.foregroundColor = (message.lightText ? NSColor.white.withAlphaComponent(0.76) : NSColor(calibratedWhite: 0.28, alpha: 1)).cgColor
         subtitle.string = message.subtitle
         card.addSublayer(subtitle)
