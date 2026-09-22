@@ -25,5 +25,5 @@ jobs:
           app=macos/dist/StandUpBuddy.app
           plutil -lint "$app/Contents/Info.plist"
           test "$(/usr/libexec/PlistBuddy -c 'Print CFBundleDevelopmentRegion' "$app/Contents/Info.plist")" = en
-          lipo -verify_arch arm64 x86_64 "$app/Contents/MacOS/StandUpBuddy"
+          lipo "$app/Contents/MacOS/StandUpBuddy" -verify_arch arm64 x86_64
           codesign --verify --deep --strict "$app"

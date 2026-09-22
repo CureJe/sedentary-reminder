@@ -13,7 +13,7 @@ Long vibe-coding sessions with Codex can make it surprisingly easy to lose track
 | Platform | Implementation | Current status |
 | --- | --- | --- |
 | Windows 10/11 | Native C# and WinForms | Source included; portable `v1.3.1` executable included |
-| macOS 13+ | Native Swift, AppKit, and Core Animation | Source and universal build script included; final build must be produced and tested on a Mac |
+| macOS 13+ | Native Swift, AppKit, and Core Animation | Universal build checked by macOS CI; interactive desktop testing pending |
 
 The project intentionally avoids Electron, WebView, and always-running high-frame-rate loops. While idle, it performs only lightweight timer checks. Animation work stops after a character settles on screen.
 
