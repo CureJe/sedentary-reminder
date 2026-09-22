@@ -9,11 +9,11 @@ enum CharacterKind: Int, CaseIterable {
 
     var displayName: String {
         switch self {
-        case .orangeCat: return "橘猫团子"
-        case .corgi: return "柯基短腿"
-        case .redPanda: return "小熊猫阿卷"
-        case .mechGuardian: return "机甲守卫"
-        case .webRanger: return "蛛网侠客 · Web Ranger"
+        case .orangeCat: return "Orange Cat"
+        case .corgi: return "Corgi"
+        case .redPanda: return "Red Panda"
+        case .mechGuardian: return "Mech Guardian"
+        case .webRanger: return "Web Ranger"
         }
     }
 

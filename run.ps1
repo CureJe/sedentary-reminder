@@ -1,5 +1,5 @@
 $projectRoot = Split-Path -Parent $MyInvocation.MyCommand.Path
-$applicationName = ([char]0x8D77).ToString() + ([char]0x8EAB).ToString() + ([char]0x5566).ToString()
+$applicationName = 'StandUpBuddy'
 $application = Join-Path $projectRoot ('bin\' + $applicationName + '.exe')
 
 if (-not (Test-Path -LiteralPath $application)) {

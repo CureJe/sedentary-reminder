@@ -5,7 +5,7 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 ROOT_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
 BUILD_DIR="$SCRIPT_DIR/.build"
 DIST_DIR="$SCRIPT_DIR/dist"
-APP_NAME="起身啦"
+APP_NAME="StandUpBuddy"
 EXECUTABLE_NAME="StandUpBuddy"
 APP_DIR="$DIST_DIR/$APP_NAME.app"
 CONTENTS_DIR="$APP_DIR/Contents"
@@ -14,13 +14,13 @@ RESOURCES_DIR="$CONTENTS_DIR/Resources"
 SIGN_IDENTITY="${SIGN_IDENTITY:--}"
 
 if [[ "$(uname -s)" != "Darwin" ]]; then
-    echo "此脚本必须在 macOS 13 或更高版本上运行。" >&2
+    echo "This script must run on macOS 13 or later." >&2
     exit 1
 fi
 
 for tool in xcrun swiftc lipo sips iconutil codesign; do
     if ! command -v "$tool" >/dev/null 2>&1; then
-        echo "缺少构建工具：$tool。请先安装 Xcode Command Line Tools。" >&2
+        echo "Missing build tool: $tool. Install Xcode Command Line Tools first." >&2
         exit 1
     fi
 done
@@ -37,13 +37,13 @@ for arch in "${ARCH_LIST[@]}"; do
     case "$arch" in
         arm64|x86_64) ;;
         *)
-            echo "不支持的架构：$arch（仅支持 arm64 和 x86_64）。" >&2
+            echo "Unsupported architecture: $arch (only arm64 and x86_64 are supported)." >&2
             exit 1
             ;;
     esac
 
     output="$BUILD_DIR/$EXECUTABLE_NAME-$arch"
-    echo "正在编译 $arch…"
+    echo "Building $arch..."
     xcrun swiftc \
         -O \
         -whole-module-optimization \
@@ -75,7 +75,7 @@ for file in cat.wav corgi.wav red-panda.wav mech.wav web-ranger.wav; do
 done
 cp "$ROOT_DIR/assets/audio/README.md" "$RESOURCES_DIR/THIRD-PARTY-NOTICES.md"
 
-ICON_SOURCE="$ROOT_DIR/assets/app/起身啦-icon.png"
+ICON_SOURCE="$ROOT_DIR/assets/app/StandUpBuddy-icon.png"
 ICONSET_DIR="$BUILD_DIR/AppIcon.iconset"
 mkdir -p "$ICONSET_DIR"
 sips -z 16 16 "$ICON_SOURCE" --out "$ICONSET_DIR/icon_16x16.png" >/dev/null
@@ -92,15 +92,15 @@ iconutil -c icns "$ICONSET_DIR" -o "$RESOURCES_DIR/AppIcon.icns"
 
 if [[ "$SIGN_IDENTITY" == "-" ]]; then
     codesign --force --sign - "$APP_DIR"
-    echo "已使用本机临时签名。"
+    echo "Signed with a local ad-hoc identity."
 else
     codesign --force --options runtime --timestamp --sign "$SIGN_IDENTITY" "$APP_DIR"
-    echo "已使用 Developer ID 签名：$SIGN_IDENTITY"
+    echo "Signed with Developer ID: $SIGN_IDENTITY"
 fi
 
 codesign --verify --deep --strict --verbose=2 "$APP_DIR"
 echo
-echo "构建完成：$APP_DIR"
+echo "Build complete: $APP_DIR"
 if [[ "${#ARCH_LIST[@]}" -gt 1 ]]; then
     lipo -archs "$MACOS_DIR/$EXECUTABLE_NAME"
 fi

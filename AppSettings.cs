@@ -9,7 +9,7 @@ namespace StandUpBuddy
     {
         public int IntervalMinutes = 45;
         public int PopupSeconds = 20;
-        public string CharacterMode = "随机轮换";
+        public string CharacterMode = "Rotate characters";
         public bool IsRunning = true;
         public bool SoundEnabled = true;
 
@@ -46,7 +46,7 @@ namespace StandUpBuddy
                 if (values.TryGetValue("PopupSeconds", out text) && int.TryParse(text, NumberStyles.Integer, CultureInfo.InvariantCulture, out number))
                     result.PopupSeconds = Math.Max(5, Math.Min(120, number));
                 if (values.TryGetValue("CharacterMode", out text) && !string.IsNullOrWhiteSpace(text))
-                    result.CharacterMode = text;
+                    result.CharacterMode = CharacterCatalog.NormalizeDisplayName(text);
                 if (values.TryGetValue("IsRunning", out text) && bool.TryParse(text, out flag))
                     result.IsRunning = flag;
                 if (values.TryGetValue("SoundEnabled", out text) && bool.TryParse(text, out flag))
@@ -69,7 +69,7 @@ namespace StandUpBuddy
             {
                 "IntervalMinutes=" + IntervalMinutes.ToString(CultureInfo.InvariantCulture),
                 "PopupSeconds=" + PopupSeconds.ToString(CultureInfo.InvariantCulture),
-                "CharacterMode=" + CharacterMode,
+                "CharacterMode=" + CharacterCatalog.NormalizeDisplayName(CharacterMode),
                 "IsRunning=" + IsRunning.ToString(CultureInfo.InvariantCulture),
                 "SoundEnabled=" + SoundEnabled.ToString(CultureInfo.InvariantCulture)
             });

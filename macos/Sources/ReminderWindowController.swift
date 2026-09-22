@@ -135,11 +135,11 @@ final class ReminderView: NSView {
         layer = sceneLayer
         sceneLayer.backgroundColor = NSColor.clear.cgColor
         toolTip = preview
-            ? "点击角色关闭预览"
-            : "左键完成休息，右键稍后 5 分钟"
+            ? "Click the character to close preview"
+            : "Click to dismiss; right-click to snooze for 5 minutes"
         setAccessibilityElement(true)
         setAccessibilityRole(.button)
-        setAccessibilityLabel("\(character.displayName)提醒你该起身活动")
+        setAccessibilityLabel("\(character.displayName) reminds you to stand up and move")
     }
 
     required init?(coder: NSCoder) {
@@ -280,15 +280,15 @@ final class ReminderView: NSView {
         let message: (title: String, subtitle: String, lightText: Bool)
         switch character {
         case .orangeCat:
-            message = ("该伸个懒腰啦", "站起来走走，肩颈也松一松", false)
+            message = ("Time for a stretch", "Take a walk and relax your shoulders", false)
         case .corgi:
-            message = ("短腿也要多走两步", "补点水，再回来继续冲", true)
+            message = ("Every step counts", "Grab some water, then come back fresh", true)
         case .redPanda:
-            message = ("活动一下，继续发光", "看看远处，让眼睛休息片刻", true)
+            message = ("Move and recharge", "Look into the distance and rest your eyes", true)
         case .mechGuardian:
-            message = ("能量补给：起身 2 分钟", "久坐警报已解除待命", true)
+            message = ("Stand for 2 minutes", "Movement mode activated", true)
         case .webRanger:
-            message = ("该休息一会了", "伸伸手臂，起来走两步", false)
+            message = ("Take a break", "Stretch and take a short walk", false)
         }
 
         let title = CATextLayer()
@@ -302,11 +302,12 @@ final class ReminderView: NSView {
         card.addSublayer(title)
 
         let subtitle = CATextLayer()
-        subtitle.frame = CGRect(x: 18, y: 28, width: card.bounds.width - 36, height: 28)
+        subtitle.frame = CGRect(x: 18, y: 16, width: card.bounds.width - 36, height: 44)
         subtitle.contentsScale = window?.backingScaleFactor ?? 2
         subtitle.font = NSFont.systemFont(ofSize: 14, weight: .medium)
         subtitle.fontSize = 14
         subtitle.alignmentMode = .center
+        subtitle.isWrapped = true
         subtitle.foregroundColor = (message.lightText ? NSColor.white.withAlphaComponent(0.76) : NSColor(calibratedWhite: 0.28, alpha: 1)).cgColor
         subtitle.string = message.subtitle
         card.addSublayer(subtitle)

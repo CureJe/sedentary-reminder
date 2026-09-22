@@ -68,7 +68,7 @@ namespace StandUpBuddy
             TopMost = true;
             KeyPreview = true;
             Cursor = Cursors.Hand;
-            Text = "该起身活动啦";
+            Text = "Time to move";
             surface = CreateLayerSurface(Math.Max(1, screenArea.Width), Math.Max(1, screenArea.Height));
             characterImage = LoadCharacterImage(character, surface.Size);
 
@@ -241,7 +241,7 @@ namespace StandUpBuddy
                 float width = Math.Min(surface.Width * .52f, 650f * UiScale());
                 float panelHeight = Math.Min(surface.Height * .19f, 205f * UiScale());
                 RectangleF rect = FitRect(centerX + height * .22f, surface.Height * .19f, width, panelHeight);
-                DrawSpeechBubble(g, rect, bubble, "该休息一下啦！", "伸伸手臂，起来走两步");
+                DrawSpeechBubble(g, rect, bubble, "Take a break!", "Stretch and take a short walk");
             }
         }
 
@@ -266,7 +266,7 @@ namespace StandUpBuddy
             {
                 float ribbonWidth = Math.Min(surface.Width * .52f, 670f * UiScale());
                 RectangleF ribbon = FitRect(finalX + width * .29f, surface.Height * .3f, ribbonWidth * unfurl, Math.Min(surface.Height * .17f, 180f * UiScale()));
-                DrawRibbon(g, ribbon, unfurl, "走两步，喝口水", "让肩颈和眼睛都松一松");
+                DrawRibbon(g, ribbon, unfurl, "Walk and hydrate", "Rest your shoulders and eyes");
             }
         }
 
@@ -303,7 +303,7 @@ namespace StandUpBuddy
             if (hologram > 0f)
             {
                 RectangleF panel = FitRect(surface.Width * .48f, surface.Height * .25f, Math.Min(surface.Width * .5f, 690f * UiScale()), Math.Min(surface.Height * .21f, 220f * UiScale()));
-                DrawHologram(g, panel, hologram, "久坐警报", "启动活动程序 · 转肩、起身、走动");
+                DrawHologram(g, panel, hologram, "Time to recharge", "Roll your shoulders. Stand up. Move.");
             }
         }
 
@@ -348,7 +348,7 @@ namespace StandUpBuddy
             {
                 float plaqueWidth = Math.Min(surface.Width * .5f, 650f * UiScale());
                 RectangleF plaque = FitRect(webX - plaqueWidth / 2f, webY + Math.Min(surface.Width, surface.Height) * .19f, plaqueWidth, Math.Min(surface.Height * .17f, 185f * UiScale()));
-                DrawWebPlaque(g, plaque, sign, "该休息一会了", "离开座位，活动肩颈和腰背");
+                DrawWebPlaque(g, plaque, sign, "Take a break", "Stand up and stretch your back");
             }
         }
 
@@ -371,16 +371,16 @@ namespace StandUpBuddy
             GraphicsState state = g.Save();
             g.TranslateTransform(-52f * assetScale, -376f * assetScale);
             g.RotateTransform(-8f);
-            using (Font titleFont = new Font("Microsoft YaHei UI", 36f * assetScale, FontStyle.Bold, GraphicsUnit.Pixel))
-            using (Font subtitleFont = new Font("Microsoft YaHei UI", 20f * assetScale, FontStyle.Regular, GraphicsUnit.Pixel))
+            using (Font titleFont = new Font("Segoe UI", 36f * assetScale, FontStyle.Bold, GraphicsUnit.Pixel))
+            using (Font subtitleFont = new Font("Segoe UI", 20f * assetScale, FontStyle.Regular, GraphicsUnit.Pixel))
             using (Brush titleBrush = new SolidBrush(Color.FromArgb(69, 44, 29)))
             using (Brush subtitleBrush = new SolidBrush(Color.FromArgb(112, 72, 45)))
             using (StringFormat center = new StringFormat())
             {
                 center.Alignment = StringAlignment.Center;
                 center.LineAlignment = StringAlignment.Center;
-                g.DrawString("起来活动一下", titleFont, titleBrush, new RectangleF(-150f * assetScale, -52f * assetScale, 300f * assetScale, 58f * assetScale), center);
-                g.DrawString("伸伸腰 · 走两步", subtitleFont, subtitleBrush, new RectangleF(-150f * assetScale, 3f * assetScale, 300f * assetScale, 42f * assetScale), center);
+                g.DrawString("Time to move", titleFont, titleBrush, new RectangleF(-150f * assetScale, -52f * assetScale, 300f * assetScale, 58f * assetScale), center);
+                g.DrawString("Stretch and walk", subtitleFont, subtitleBrush, new RectangleF(-150f * assetScale, 3f * assetScale, 300f * assetScale, 42f * assetScale), center);
             }
             g.Restore(state);
         }
@@ -495,8 +495,8 @@ namespace StandUpBuddy
         private void DrawMessageText(Graphics g, RectangleF rect, string title, string subtitle, Color titleColor, Color subtitleColor, float opacity)
         {
             float scale = Math.Max(.72f, Math.Min(1.08f, rect.Width / 470f));
-            using (Font titleFont = new Font("Microsoft YaHei UI", 22f * scale, FontStyle.Bold))
-            using (Font subtitleFont = new Font("Microsoft YaHei UI", 10.5f * scale, FontStyle.Regular))
+            using (Font titleFont = new Font("Segoe UI", 22f * scale, FontStyle.Bold))
+            using (Font subtitleFont = new Font("Segoe UI", 10.5f * scale, FontStyle.Regular))
             using (Brush titleBrush = new SolidBrush(Color.FromArgb((int)(255 * Clamp(opacity)), titleColor)))
             using (Brush subtitleBrush = new SolidBrush(Color.FromArgb((int)(245 * Clamp(opacity)), subtitleColor)))
             using (StringFormat center = new StringFormat())
@@ -508,12 +508,12 @@ namespace StandUpBuddy
                 g.DrawString(title, titleFont, titleBrush, titleRect, center);
                 g.DrawString(subtitle, subtitleFont, subtitleBrush, subRect, center);
             }
-            using (Font hintFont = new Font("Microsoft YaHei UI", 8f * scale, FontStyle.Regular))
+            using (Font hintFont = new Font("Segoe UI", 8f * scale, FontStyle.Regular))
             using (Brush hintBrush = new SolidBrush(Color.FromArgb((int)(170 * Clamp(opacity)), subtitleColor)))
             using (StringFormat center = new StringFormat())
             {
                 center.Alignment = StringAlignment.Center;
-                g.DrawString(preview ? "单击关闭预览" : "单击收起 · 右键或按 S 稍后提醒", hintFont, hintBrush, new RectangleF(rect.X, rect.Bottom - rect.Height * .2f, rect.Width, rect.Height * .16f), center);
+                g.DrawString(preview ? "Click to close preview" : "Click to dismiss / Right-click or S to snooze", hintFont, hintBrush, new RectangleF(rect.X, rect.Bottom - rect.Height * .2f, rect.Width, rect.Height * .16f), center);
             }
         }
 
@@ -578,7 +578,7 @@ namespace StandUpBuddy
             blend.SourceConstantAlpha = 255;
             blend.AlphaFormat = AcSrcAlpha;
             if (!UpdateLayeredWindow(Handle, layerScreenDc, ref destination, ref size, layerMemoryDc, ref source, 0, ref blend, UlwAlpha))
-                Text = "透明舞台初始化失败：" + Marshal.GetLastWin32Error();
+                Text = "Transparent window initialization failed: " + Marshal.GetLastWin32Error();
         }
 
         private Bitmap CreateLayerSurface(int width, int height)
@@ -596,7 +596,7 @@ namespace StandUpBuddy
             IntPtr pixels;
             layerBitmap = CreateDIBSection(layerScreenDc, ref info, DibRgbColors, out pixels, IntPtr.Zero, 0);
             if (layerBitmap == IntPtr.Zero || pixels == IntPtr.Zero)
-                throw new InvalidOperationException("无法创建透明角色舞台。");
+                throw new InvalidOperationException("Unable to create the transparent character window.");
             layerOldBitmap = SelectObject(layerMemoryDc, layerBitmap);
             return new Bitmap(width, height, width * 4, PixelFormat.Format32bppPArgb, pixels);
         }
@@ -647,7 +647,7 @@ namespace StandUpBuddy
             string resourceName = "StandUpBuddy.Assets." + filename;
             using (Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(resourceName))
             {
-                if (stream == null) throw new InvalidOperationException("缺少角色素材：" + resourceName);
+                if (stream == null) throw new InvalidOperationException("Missing character asset: " + resourceName);
                 using (Image source = Image.FromStream(stream))
                 {
                     float target;

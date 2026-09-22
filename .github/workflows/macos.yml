@@ -1,0 +1,29 @@
+name: macOS build and English content
+
+on:
+  push:
+    branches: [main, codex/english-only]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  macos:
+    runs-on: macos-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - name: Check English content and resource paths
+        run: python3 tests/check_english.py
+      - name: Build both architectures and verify signature
+        run: bash macos/build-macos.sh
+      - name: Validate bundle metadata and architectures
+        run: |
+          set -euo pipefail
+          app=macos/dist/StandUpBuddy.app
+          plutil -lint "$app/Contents/Info.plist"
+          test "$(/usr/libexec/PlistBuddy -c 'Print CFBundleDevelopmentRegion' "$app/Contents/Info.plist")" = en
+          lipo "$app/Contents/MacOS/StandUpBuddy" -verify_arch arm64 x86_64
+          codesign --verify --deep --strict "$app"

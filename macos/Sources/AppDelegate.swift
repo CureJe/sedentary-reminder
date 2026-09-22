@@ -49,17 +49,17 @@ final class AppDelegate: NSObject, NSApplicationDelegate, SettingsWindowControll
     private func configureStatusItem() {
         statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
         if let button = statusItem.button {
-            button.image = NSImage(systemSymbolName: "figure.stand", accessibilityDescription: "起身啦")
+            button.image = NSImage(systemSymbolName: "figure.stand", accessibilityDescription: "Stand Up Buddy")
             button.image?.isTemplate = true
-            button.toolTip = "起身啦"
+            button.toolTip = "Stand Up Buddy"
         }
 
         statusMenu = NSMenu()
-        statusMenu.addItem(withTitle: "打开设置", action: #selector(showSettings(_:)), keyEquivalent: ",")
-        statusMenu.addItem(withTitle: "立即预览", action: #selector(previewReminder(_:)), keyEquivalent: "p")
+        statusMenu.addItem(withTitle: "Open settings", action: #selector(showSettings(_:)), keyEquivalent: ",")
+        statusMenu.addItem(withTitle: "Preview now", action: #selector(previewReminder(_:)), keyEquivalent: "p")
         toggleMenuItem = statusMenu.addItem(withTitle: "", action: #selector(toggleRunning(_:)), keyEquivalent: "")
         statusMenu.addItem(.separator())
-        statusMenu.addItem(withTitle: "退出起身啦", action: #selector(quit(_:)), keyEquivalent: "q")
+        statusMenu.addItem(withTitle: "Quit Stand Up Buddy", action: #selector(quit(_:)), keyEquivalent: "q")
         statusMenu.items.forEach { $0.target = self }
         statusItem.menu = statusMenu
         updateMenuState()
@@ -132,7 +132,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, SettingsWindowControll
     }
 
     private func updateMenuState() {
-        toggleMenuItem.title = settings.isRunning ? "暂停提醒" : "开始提醒"
+        toggleMenuItem.title = settings.isRunning ? "Pause reminders" : "Start reminders"
     }
 
     func settingsWindowDidChange(_ controller: SettingsWindowController) {

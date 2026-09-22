@@ -36,13 +36,13 @@ namespace StandUpBuddy
         {
             this.startHidden = startHidden;
             settings = AppSettings.Load();
-            Text = "起身啦";
+            Text = "Stand Up Buddy";
             ClientSize = new Size(720, 610);
-            MinimumSize = new Size(680, 590);
+            MinimumSize = SizeFromClientSize(new Size(720, 610));
             StartPosition = FormStartPosition.CenterScreen;
             BackColor = Paper;
             ForeColor = Ink;
-            Font = new Font("Microsoft YaHei UI", 9.5f, FontStyle.Regular);
+            Font = new Font("Segoe UI", 9.5f, FontStyle.Regular);
             Icon = Icon.ExtractAssociatedIcon(Application.ExecutablePath) ?? SystemIcons.Information;
 
             Panel hero = new Panel();
@@ -52,17 +52,17 @@ namespace StandUpBuddy
             hero.Paint += PaintHero;
             Controls.Add(hero);
 
-            Label eyebrow = MakeLabel("STAND UP / 轻量久坐提醒", 13, FontStyle.Bold, Color.FromArgb(244, 177, 79));
+            Label eyebrow = MakeLabel("STAND UP / TAKE A BREAK", 13, FontStyle.Bold, Color.FromArgb(244, 177, 79));
             eyebrow.Location = new Point(38, 28);
             eyebrow.AutoSize = true;
             hero.Controls.Add(eyebrow);
 
-            Label title = MakeLabel("把休息，放回工作节奏里。", 23, FontStyle.Bold, Color.White);
+            Label title = MakeLabel("Make time for a break.", 23, FontStyle.Bold, Color.White);
             title.Location = new Point(36, 57);
             title.AutoSize = true;
             hero.Controls.Add(title);
 
-            Label subtitle = MakeLabel("安静计时，到点让角色从屏幕边缘登场提醒你活动。", 10, FontStyle.Regular, Color.FromArgb(205, 210, 217));
+            Label subtitle = MakeLabel("A friendly face to remind you to stretch and move.", 10, FontStyle.Regular, Color.FromArgb(205, 210, 217));
             subtitle.Location = new Point(40, 111);
             subtitle.AutoSize = true;
             hero.Controls.Add(subtitle);
@@ -79,50 +79,48 @@ namespace StandUpBuddy
             };
             Controls.Add(card);
 
-            Label cardTitle = MakeLabel("提醒设置", 13, FontStyle.Bold, Ink);
+            Label cardTitle = MakeLabel("Reminder settings", 13, FontStyle.Bold, Ink);
             cardTitle.Location = new Point(26, 20);
             cardTitle.AutoSize = true;
             card.Controls.Add(cardTitle);
 
-            card.Controls.Add(MakeFieldLabel("每隔", new Point(28, 75)));
+            card.Controls.Add(MakeFieldLabel("Every", new Point(28, 75)));
             intervalInput = MakeNumberInput(1, 240, settings.IntervalMinutes);
             intervalInput.Location = new Point(106, 67);
             card.Controls.Add(intervalInput);
-            Label minuteUnit = MakeFieldLabel("分钟提醒一次", new Point(208, 75));
+            Label minuteUnit = MakeFieldLabel("minutes", new Point(208, 75));
             minuteUnit.AutoSize = true;
             card.Controls.Add(minuteUnit);
 
-            card.Controls.Add(MakeFieldLabel("弹窗", new Point(362, 75)));
+            card.Controls.Add(MakeFieldLabel("Show for", new Point(362, 75)));
             durationInput = MakeNumberInput(5, 120, settings.PopupSeconds);
             durationInput.Location = new Point(438, 67);
             card.Controls.Add(durationInput);
-            Label secondUnit = MakeFieldLabel("秒", new Point(540, 75));
+            Label secondUnit = MakeFieldLabel("seconds", new Point(540, 75));
             secondUnit.AutoSize = true;
             card.Controls.Add(secondUnit);
 
-            card.Controls.Add(MakeFieldLabel("出场角色", new Point(28, 132)));
+            card.Controls.Add(MakeFieldLabel("Character", new Point(28, 132)));
             characterInput = new ComboBox();
             characterInput.DropDownStyle = ComboBoxStyle.DropDownList;
             characterInput.FlatStyle = FlatStyle.Flat;
-            characterInput.Font = new Font("Microsoft YaHei UI", 10f);
+            characterInput.Font = new Font("Segoe UI", 10f);
             characterInput.Location = new Point(106, 125);
             characterInput.Size = new Size(204, 30);
             characterInput.Items.AddRange(CharacterCatalog.DisplayNames);
-            string configuredCharacter = settings.CharacterMode.IndexOf("蛛", StringComparison.Ordinal) >= 0
-                ? CharacterCatalog.DisplayNames[5]
-                : settings.CharacterMode;
+            string configuredCharacter = CharacterCatalog.NormalizeDisplayName(settings.CharacterMode);
             int selected = characterInput.Items.IndexOf(configuredCharacter);
             characterInput.SelectedIndex = selected >= 0 ? selected : 0;
             card.Controls.Add(characterInput);
 
-            Label roleNote = MakeLabel("写实角色素材 · 五位角色独立动画", 8.5f, FontStyle.Regular, Muted);
+            Label roleNote = MakeLabel("Five characters, five unique entrances", 8.5f, FontStyle.Regular, Muted);
             roleNote.Location = new Point(330, 132);
             roleNote.AutoSize = true;
             card.Controls.Add(roleNote);
 
             soundInput = new CheckBox();
-            soundInput.Text = "播放角色提示音";
-            soundInput.Font = new Font("Microsoft YaHei UI", 9.5f, FontStyle.Regular);
+            soundInput.Text = "Play character sounds";
+            soundInput.Font = new Font("Segoe UI", 9.5f, FontStyle.Regular);
             soundInput.ForeColor = Ink;
             soundInput.BackColor = Color.Transparent;
             soundInput.AutoSize = true;
@@ -131,8 +129,8 @@ namespace StandUpBuddy
             card.Controls.Add(soundInput);
 
             startupInput = new CheckBox();
-            startupInput.Text = "开机后自动运行（从托盘安静启动）";
-            startupInput.Font = new Font("Microsoft YaHei UI", 9.5f, FontStyle.Regular);
+            startupInput.Text = "Start at sign-in (in the tray)";
+            startupInput.Font = new Font("Segoe UI", 9.5f, FontStyle.Regular);
             startupInput.ForeColor = Ink;
             startupInput.BackColor = Color.Transparent;
             startupInput.AutoSize = true;
@@ -141,7 +139,7 @@ namespace StandUpBuddy
             startupInput.CheckedChanged += StartupChanged;
             card.Controls.Add(startupInput);
 
-            Button previewButton = MakeButton("预览提醒", Color.White, Ink, true);
+            Button previewButton = MakeButton("Preview", Color.White, Ink, true);
             previewButton.Location = new Point(28, 207);
             previewButton.Size = new Size(128, 43);
             previewButton.Click += delegate { ShowReminder(true); };
@@ -153,7 +151,7 @@ namespace StandUpBuddy
             startButton.Click += ToggleRunning;
             card.Controls.Add(startButton);
 
-            Label lightNote = MakeLabel("关闭窗口后仍在托盘安静运行", 8.5f, FontStyle.Regular, Muted);
+            Label lightNote = MakeLabel("Closing keeps the app in the tray", 8.5f, FontStyle.Regular, Muted);
             lightNote.Location = new Point(354, 220);
             lightNote.AutoSize = true;
             card.Controls.Add(lightNote);
@@ -168,7 +166,7 @@ namespace StandUpBuddy
             nextLabel.AutoSize = true;
             Controls.Add(nextLabel);
 
-            Label footer = MakeLabel("角色停稳后立即停止动画刷新；没有持续运行的背景动效。", 8.5f, FontStyle.Regular, Muted);
+            Label footer = MakeLabel("Animations stop once a character settles. No continuous background effects.", 8.5f, FontStyle.Regular, Muted);
             footer.Location = new Point(38, 574);
             footer.AutoSize = true;
             footer.Anchor = AnchorStyles.Left | AnchorStyles.Bottom;
@@ -180,13 +178,13 @@ namespace StandUpBuddy
             soundInput.CheckedChanged += SettingsChanged;
 
             ContextMenuStrip trayMenu = new ContextMenuStrip();
-            trayMenu.Items.Add("打开设置", null, delegate { RestoreWindow(); });
-            trayMenu.Items.Add("立即预览", null, delegate { ShowReminder(true); });
+            trayMenu.Items.Add("Open settings", null, delegate { RestoreWindow(); });
+            trayMenu.Items.Add("Preview now", null, delegate { ShowReminder(true); });
             trayMenu.Items.Add(new ToolStripSeparator());
-            trayMenu.Items.Add("退出", null, delegate { ExitApplication(); });
+            trayMenu.Items.Add("Quit", null, delegate { ExitApplication(); });
             trayIcon = new NotifyIcon();
             trayIcon.Icon = Icon;
-            trayIcon.Text = "起身啦";
+            trayIcon.Text = "Stand Up Buddy";
             trayIcon.Visible = true;
             trayIcon.ContextMenuStrip = trayMenu;
             trayIcon.DoubleClick += delegate { RestoreWindow(); };
@@ -231,7 +229,7 @@ namespace StandUpBuddy
         {
             Label label = new Label();
             label.Text = text;
-            label.Font = new Font("Microsoft YaHei UI", size, style);
+            label.Font = new Font("Segoe UI", size, style);
             label.ForeColor = color;
             label.BackColor = Color.Transparent;
             return label;
@@ -261,7 +259,7 @@ namespace StandUpBuddy
         {
             Button button = new Button();
             button.Text = text;
-            button.Font = new Font("Microsoft YaHei UI", 9.5f, FontStyle.Bold);
+            button.Font = new Font("Segoe UI", 9.5f, FontStyle.Bold);
             button.BackColor = background;
             button.ForeColor = foreground;
             button.FlatStyle = FlatStyle.Flat;
@@ -304,7 +302,7 @@ namespace StandUpBuddy
                 suppressStartupChange = true;
                 startupInput.Checked = !startupInput.Checked;
                 suppressStartupChange = false;
-                MessageBox.Show(this, "无法修改开机自启设置。\n\n" + error.Message, "起身啦", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(this, "Unable to change startup settings.\n\nWindows error code: 0x" + error.HResult.ToString("X8"), "Stand Up Buddy", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
 
@@ -328,17 +326,17 @@ namespace StandUpBuddy
         {
             if (!isRunning)
             {
-                statusLabel.Text = "已暂停";
-                nextLabel.Text = "需要时，再把节奏接回来";
-                startButton.Text = "开始提醒";
+                statusLabel.Text = "Paused";
+                nextLabel.Text = "Ready when you are";
+                startButton.Text = "Start reminders";
                 return;
             }
 
             TimeSpan left = nextReminder - DateTime.Now;
             if (left < TimeSpan.Zero) left = TimeSpan.Zero;
-            statusLabel.Text = "正在安静计时";
-            nextLabel.Text = string.Format("下次提醒  {0:00}:{1:00}", (int)left.TotalMinutes, left.Seconds);
-            startButton.Text = "暂停提醒";
+            statusLabel.Text = "Timer running";
+            nextLabel.Text = string.Format("Next break  {0:00}:{1:00}", (int)left.TotalMinutes, left.Seconds);
+            startButton.Text = "Pause reminders";
         }
 
         private CharacterKind SelectCharacter()
@@ -394,7 +392,7 @@ namespace StandUpBuddy
                 Hide();
                 if (!trayHintShown)
                 {
-                    trayIcon.ShowBalloonTip(2500, "起身啦仍在运行", "双击托盘图标可重新打开设置。", ToolTipIcon.Info);
+                    trayIcon.ShowBalloonTip(2500, "Stand Up Buddy is still running", "Double-click the tray icon to open settings.", ToolTipIcon.Info);
                     trayHintShown = true;
                 }
                 return;

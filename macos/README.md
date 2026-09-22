@@ -24,7 +24,9 @@ chmod +x build-macos.sh
 ./build-macos.sh
 ```
 
-Output: `macos/dist/起身啦.app`
+Output: `macos/dist/StandUpBuddy.app`
+
+The app's display language is English. The existing bundle identifier is intentionally retained so macOS can continue using saved preferences and the existing app identity. Quit and replace the old bundle, then check launch-at-login registration after moving or renaming it.
 
 To build only for the current Mac architecture:
 
@@ -56,4 +58,6 @@ An ad hoc signed test build may require a manual Gatekeeper override on first la
 
 ## Current validation boundary
 
-The source was prepared in a Windows workspace. AppKit can only be compiled with the macOS/Xcode SDK, so the final app bundle, Developer ID signing, notarization, Gatekeeper behavior, and multi-display animation must be verified on a real Mac before publishing a macOS binary.
+The macOS GitHub Actions workflow compiles both arm64 and x86_64 using the macOS/Xcode SDK, builds a universal app bundle, and verifies its ad hoc signature and English bundle metadata. It also checks repository text, resource paths, and the shipped Windows checksum with `python3 tests/check_english.py`.
+
+This is build validation, not an interactive desktop test. English text layout, menu bar behavior, sound playback, login items, and multi-display animation still need the real-device checks above. Developer ID signing, notarization, and Gatekeeper distribution acceptance remain unverified; CI does not publish a macOS release binary.
